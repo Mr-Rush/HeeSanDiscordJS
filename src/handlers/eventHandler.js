@@ -1,3 +1,4 @@
+// eventHandler.js
 const path = require('path');
 const getAllFiles = require('../utils/getAllFiles');
 
@@ -17,4 +18,11 @@ module.exports = (client) => {
       }
     });
   }
+
+  // Add this block to listen for the guildMemberAdd event
+  client.on('guildMemberAdd', (member) => {
+    const welcomeEventFile = path.join(__dirname, '..', 'events', `welcome`, 'welcome.js');
+    const welcomeFunction = require(welcomeEventFile);
+    welcomeFunction(client, member);
+  });
 };
