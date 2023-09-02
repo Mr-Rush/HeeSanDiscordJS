@@ -1,7 +1,6 @@
 require('dotenv').config();
-const { Client, IntentsBitField, GatewayIntentBits } = require('discord.js');
+const { AttachmentBuilder, Client, IntentsBitField, GatewayIntentBits } = require('discord.js');
 const eventHandler = require('./handlers/eventHandler');
-// const welcome = require(`../src/events/ready/welcome.js`)
 
 const client = new Client({
   intents: [
