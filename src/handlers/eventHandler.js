@@ -31,4 +31,5 @@ module.exports = (client) => {
     const leaveFunction = require(leaveEventFile);
     leaveFunction(client, member);
   });
+  
 };

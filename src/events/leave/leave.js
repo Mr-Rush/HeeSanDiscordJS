@@ -1,18 +1,12 @@
-// leave.js
-module.exports = (client) => {
-    client.on("guildMemberRemove", member => {
+module.exports = async (client, member) => {
 
-    //   console.log(`Member ${member.user.tag} left the server.`);
-    
-      const channelID = `1147555275541319750`;
-    
-      const message = `**${member} Just left the server.**`;
-  
-      const channel = member.guild.channels.cache.get(channelID);
-  
-      channel.send(message)
-        .then(() => console.log(`Leave message sent successfully.`))
-        .catch(error => console.error(`Error sending leave message: ${error}`));
-    });
-  };
-  
+  const channel = member.guild.channels.cache.find((ch) => ch.name === 'welcome');
+  if (channel) {
+    // Send a normal message tagging the user
+    await channel.send(`👋 <@${member.id}>, Sadly left the server`)
+      .catch(console.error);
+
+      console.log(`${member.user.tag} left the server.`);
+
+  }
+};
