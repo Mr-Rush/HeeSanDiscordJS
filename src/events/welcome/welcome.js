@@ -43,7 +43,7 @@ module.exports = async (client, member) => {
       });
 
 
-      console.log('Image sent successfully.');
+      console.log(`Image sent successfully for member: ${member.displayName}`);
     } catch (error) {
       console.error('Error:', error);
     }
