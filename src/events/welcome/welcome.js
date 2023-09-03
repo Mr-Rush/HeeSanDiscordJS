@@ -39,7 +39,7 @@ module.exports = async (client, member) => {
 
       // Send the image as an attachment along with a welcome message
       await welcomeChannel.send(`Welcome to the server, <@${member.id}>! You are the ${member.guild.memberCount}th member of ${member.guild.name}.`, {
-        files: [{ attachment: __dirname + 'src/events/welcome/WelcomeIMG.jpg', name: 'profile-image.png' }],
+        files: [canvas.toBuffer()],
       });
 
 
