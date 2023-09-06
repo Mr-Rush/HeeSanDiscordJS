@@ -1,112 +1,138 @@
 const {
-    Client,
-    Interaction,
-    ApplicationCommandOptionType,
-    PermissionFlagsBits,
-  } = require('discord.js');
-  
-  module.exports = {
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    
-    
-    callback: async (client, interaction) => {
+  Client,
+  Interaction,
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+  TextChannel,
+} = require('discord.js');
+
+// Initialize a ban case counter
+let banCaseCounter = 0;
+
+module.exports = {
+
+  name: 'ban',
+  description: 'Bans a member from this server.',
+  /**
+   * @param {Client} client
+   * @param {Interaction} interaction
+   */
+  callback: async (client, interaction) => {
       const targetUserId = interaction.options.get('target-user').value;
       const reason = interaction.options.get('reason')?.value || 'No reason provided';
-    
+
       await interaction.deferReply();
-    
+
       const targetUser = await interaction.guild.members.fetch(targetUserId);
-    
+
       if (!targetUser) {
-        await interaction.editReply("That user doesn't exist in this server.");
-        return;
+          await interaction.editReply("That user doesn't exist in this server.");
+          return;
       }
-    
+
       if (targetUser.id === interaction.guild.ownerId) {
-        await interaction.editReply(
-          "You can't ban that user because they're the server owner."
-        );
-        return;
+          await interaction.editReply(
+              "You can't ban that user because they're the server owner."
+          );
+          return;
       }
-    
+
       const targetUserRolePosition = targetUser.roles.highest.position; // Highest role of the target user
-      const requestUserRolePosition = interaction.member.roles.highest.position; // Highest role of the user running the cmd
+      const requestUserRolePosition = interaction.member.roles.highest.position; // Highest role of the user running the command
       const botRolePosition = interaction.guild.members.me.roles.highest.position; // Highest role of the bot
-    
+
       if (targetUserRolePosition >= requestUserRolePosition) {
-        await interaction.editReply(
-          "You can't ban that user because they have the same/higher role than you."
-        );
-        return;
+          await interaction.editReply(
+              "You can't ban that user because they have the same/higher role than you."
+          );
+          return;
       }
-    
+
       if (targetUserRolePosition >= botRolePosition) {
-        await interaction.editReply(
-          "I can't ban that user because they have the same/higher role than me."
-        );
-        return;
+          await interaction.editReply(
+              "I can't ban that user because they have the same/higher role than me."
+          );
+          return;
       }
-    
+
       // Ban the targetUser
       try {
-        await targetUser.ban({ reason });
-    
-        // Log the ban action in the "logs" channel
-        const logsChannel = interaction.guild.channels.cache.find(
-          (channel) => channel.name === 'logs'
-        );
-    
-        if (logsChannel && logsChannel.isText()) {
-          const banEmbed = {
-            title: 'User Banned',
-            color: 0xff0000, // Red color for error
-            fields: [
-              {
-                name: 'Banned User',
-                value: targetUser.user.tag,
-              },
-              {
-                name: 'Banned By',
-                value: interaction.user.tag,
-              },
-              {
-                name: 'Reason',
-                value: reason,
-              },
-            ],
-            timestamp: new Date(),
+          await targetUser.ban({ reason });
+
+          // Increment the ban case counter
+          banCaseCounter++;
+
+          // Get the user tag before banning
+          const targetUserTag = targetUser.user.tag;
+
+          // Log the ban action in the "logs" channel
+          const logsChannel = interaction.guild.channels.cache.find(
+              (channel) => channel.name === 'logs'
+          );
+
+          if (logsChannel && logsChannel instanceof TextChannel) {
+            const banEmbed = {
+              "content": "",
+              "tts": false,
+              "embeds": [
+                  {
+                      "title": banCaseCounter + ` | UNBAN | ${targetUserTag}`,
+                      "description": "User has been banned.",
+                      "color": 2326507,
+                      "fields": [
+                          {
+                              "name": "User",
+                              "value": targetUserTag,
+                              "inline": true
+                          },
+                          {
+                              "name": "Moderator",
+                              "value": interaction.user.tag,
+                              "inline": true
+                          },
+                          {
+                              "name": "Reason",
+                              "value": reason,
+                              "inline": true
+                          }
+                      ],
+                      "footer": {
+                          "text": `ID: ${targetUserId}`,
+                      },
+                      "timestamp": new Date()
+                  }
+              ],
+              "components": [],
+              "actions": {}
           };
-    
-          await logsChannel.send({ embeds: [banEmbed] });
-        }
-    
-        await interaction.editReply(`User ${targetUser} was banned\nReason: ${reason}`);
+          
+          
+
+              await logsChannel.send({ embeds: [banEmbed] });
+          } else {
+              console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
+          }
+
+          await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
       } catch (error) {
-        console.log(`There was an error when banning: ${error}`);
+          console.log(`There was an error when banning: ${error}`);
       }
-    },
-    
+  },
+
   
-    name: 'ban',
-    description: 'Bans a member from this server.',
-    options: [
+  options: [
       {
-        name: 'target-user',
-        description: 'The user you want to ban.',
-        type: ApplicationCommandOptionType.Mentionable,
-        required: true,
+          name: 'target-user',
+          description: 'The user you want to ban.',
+          type: ApplicationCommandOptionType.Mentionable,
+          required: true,
       },
       {
-        name: 'reason',
-        description: 'The reason you want to ban.',
-        type: ApplicationCommandOptionType.String,
+          name: 'reason',
+          description: 'The reason you want to ban.',
+          type: ApplicationCommandOptionType.String,
       },
-    ],
-    permissionsRequired: [PermissionFlagsBits.BanMembers],
-    botPermissions: [PermissionFlagsBits.BanMembers],
-  };
-  
+  ],
+  permissionsRequired: [PermissionFlagsBits.BanMembers],
+  botPermissions: [PermissionFlagsBits.BanMembers],
+};

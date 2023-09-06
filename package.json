@@ -4,6 +4,7 @@
     "discord-html-transcripts": "^3.1.5",
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
+    "lib": "^5.0.1",
     "nodemon": "^3.0.1",
     "undici": "^5.23.0"
   },
