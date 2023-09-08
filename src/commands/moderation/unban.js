@@ -2,6 +2,8 @@ const {
     Client,
     Interaction,
     ApplicationCommandOptionType,
+    MessageEmbed,
+    EmbedBuilder,
     PermissionFlagsBits,
     TextChannel,
 } = require('discord.js');
@@ -38,44 +40,31 @@ module.exports = {
             );
 
             if (logsChannel && logsChannel instanceof TextChannel) {
-                const unbanEmbed = {
-                    "content": "",
-                    "tts": false,
-                    "embeds": [
-                        {
-                            "id": 652627557,
-                            "title": `CASE NUMBER | UNBAN | ${targetUserTag}`, // Use backticks (`) for interpolation
-                            "description": "User has been unbanned.",
-                            "color": 2326507,
-                            "fields": [
-                                {
-                                    "id": 492785092,
-                                    "name": "User",
-                                    "value": `${targetUserTag}`,
-                                    "inline": true
-                                },
-                                {
-                                    "id": 69730269,
-                                    "name": "Moderator",
-                                    "value": interaction.user.tag,
-                                    "inline": true
-                                },
-                                {
-                                    "id": 772548797,
-                                    "name": "Reason",
-                                    "value": reason,
-                                    "inline": true
-                                }
-                            ],
-                            "footer": {
-                                "text": `ID: ${targetUserId}`, // Use backticks (`) for interpolation
-                            },
-                            "timestamp": Date.now
-                        }
-                    ],
-                    "components": [],
-                    "actions": {}
-                };
+                const unbanEmbed = new EmbedBuilder()
+            .setTitle("UNBAN | ${targetUserTag}")
+            .setDescription("User has been banned")
+            .setAuthor({
+                name: targetUserTag,
+                iconURL: targetUserAvatarURL
+            })
+            .addFields(
+                {
+                    name: "User",
+                    value: "targetUserTag",
+                    inline: true
+                },
+                {
+                    name: "Moderator",
+                    value: "interaction.user.tag",
+                    inline: true
+                },
+                )
+                .setColor("#00b0f4")
+  .setFooter({
+      text: "ID: ${targetUserId}",
+    })
+    .setTimestamp();
+                
                 
                 await logsChannel.send({ embeds: [unbanEmbed] });
             } else {
@@ -84,7 +73,7 @@ module.exports = {
 
             await interaction.editReply(`User ${unbannedUserTag} has been unbanned.`);
         } catch (error) {
-            console.log(`There was an error when unbanning: ${error}`);
+            console.error(`There was an error when unbanning: `, error);
         }
     },
 

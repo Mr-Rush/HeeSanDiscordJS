@@ -3,6 +3,7 @@ const {
   Interaction,
   ApplicationCommandOptionType,
   PermissionFlagsBits,
+  EmbedBuilder,
   TextChannel,
 } = require('discord.js');
 
@@ -62,62 +63,58 @@ module.exports = {
           // Increment the ban case counter
           banCaseCounter++;
 
-          // Get the user tag before banning
           const targetUserTag = targetUser.user.tag;
-
+          const targetUserAvatarURL = targetUser.displayAvatarURL();
+          
+          console.log('Target User Tag:', targetUserTag);
+          console.log('Avatar URL:', targetUserAvatarURL);
+          
           // Log the ban action in the "logs" channel
           const logsChannel = interaction.guild.channels.cache.find(
               (channel) => channel.name === 'logs'
           );
-
+          
           if (logsChannel && logsChannel instanceof TextChannel) {
-            const banEmbed = {
-              "content": "",
-              "tts": false,
-              "embeds": [
-                  {
-                      "title": banCaseCounter + ` | UNBAN | ${targetUserTag}`,
-                      "description": "User has been banned.",
-                      "color": 2326507,
-                      "fields": [
-                          {
-                              "name": "User",
-                              "value": targetUserTag,
-                              "inline": true
-                          },
-                          {
-                              "name": "Moderator",
-                              "value": interaction.user.tag,
-                              "inline": true
-                          },
-                          {
-                              "name": "Reason",
-                              "value": reason,
-                              "inline": true
-                          }
-                      ],
-                      "footer": {
-                          "text": `ID: ${targetUserId}`,
-                      },
-                      "timestamp": new Date()
-                  }
-              ],
-              "components": [],
-              "actions": {}
-          };
-          
-          
+              const banEmbed = new EmbedBuilder()
+            .setTitle( banCaseCounter + ` | BAN | ${targetUserTag}`)
+            .setDescription("User has been banned")
+            .setAuthor({
+                name: targetUserTag,
+                iconURL: targetUserAvatarURL
+            })
+            .addFields(
+                {
+                    name: "User",
+                    value: targetUserTag,
+                    inline: true
+                },
+                {
+                    name: "Moderator",
+                    value: interaction.user.tag,
+                    inline: true
+                },
+                {
+                    name: "Reason",
+                    value: reason,
+                    inline: true
+                },
+                )
+                .setColor("#00b0f4")
+  .setFooter({
+      text: `ID: ${targetUserId}`,
+    })
+    .setTimestamp();
+    
+    await logsChannel.send({ embeds: [banEmbed] });
+} else {
+    console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
+}
 
-              await logsChannel.send({ embeds: [banEmbed] });
-          } else {
-              console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
-          }
-
-          await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
-      } catch (error) {
-          console.log(`There was an error when banning: ${error}`);
-      }
-  },
+await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
+} catch (error) {
+    console.error(`There was an error when banning: `, error);
+}
+},
 
   
   options: [
