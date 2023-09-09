@@ -116,52 +116,25 @@ module.exports = {
                         console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
                     }                        
                         await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
+                    } catch (error) {
+                        console.error(`There was an error when banning: `, error);
+                    }
                 },
-                {
-                    name: "Moderator",
-                    value: interaction.user.tag,
-                    inline: true
-                },
-                {
-                    name: "Reason",
-                    value: reason,
-                    inline: true
-                },
-                )
-                .setColor("#00b0f4")
-  .setFooter({
-      text: `ID: ${targetUserId}`,
-    })
-    .setTimestamp();
-    
-    await logsChannel.send({ embeds: [banEmbed] });
-} else {
-    console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
-}
-
-await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
-} catch (error) {
-    console.error(`There was an error when banning: `, error);
-}
-},
-
-  
-  options: [
-      {
-          name: 'target-user',
-          description: 'The user you want to ban.',
-          type: ApplicationCommandOptionType.Mentionable,
-          required: true,
-      },
-      {
-          name: 'reason',
-          description: 'The reason you want to ban.',
-          type: ApplicationCommandOptionType.String,
-      },
-  ],
-  permissionsRequired: [PermissionFlagsBits.BanMembers],
-  botPermissions: [PermissionFlagsBits.BanMembers],
-};
+                
+                
+                options: [
+                    {
+                        name: 'target-user',
+                        description: 'The user you want to ban.',
+                        type: ApplicationCommandOptionType.Mentionable,
+                        required: true,
+                    },
+                    {
+                        name: 'reason',
+                        description: 'The reason you want to ban.',
+                        type: ApplicationCommandOptionType.String,
+                    },
+                ],
                 permissionsRequired: [PermissionFlagsBits.BanMembers],
                 botPermissions: [PermissionFlagsBits.BanMembers],
             };
