@@ -62,31 +62,60 @@ module.exports = {
 
           // Increment the ban case counter
           banCaseCounter++;
-
+          
           const targetUserTag = targetUser.user.tag;
           const targetUserAvatarURL = targetUser.displayAvatarURL();
           
           console.log('Target User Tag:', targetUserTag);
           console.log('Avatar URL:', targetUserAvatarURL);
           
+          try {
+            await targetUser.send(`You have been banned from ${interaction.guild.name}\nReason: ${reason}`);
+          } catch (dmError) {
+            console.error('Error sending DM to banned user:', dmError);
+          }
+          
           // Log the ban action in the "logs" channel
           const logsChannel = interaction.guild.channels.cache.find(
               (channel) => channel.name === 'logs'
-          );
-          
-          if (logsChannel && logsChannel instanceof TextChannel) {
-              const banEmbed = new EmbedBuilder()
-            .setTitle( banCaseCounter + ` | BAN | ${targetUserTag}`)
-            .setDescription("User has been banned")
-            .setAuthor({
-                name: targetUserTag,
-                iconURL: targetUserAvatarURL
-            })
-            .addFields(
-                {
-                    name: "User",
-                    value: targetUserTag,
-                    inline: true
+              );
+              
+              if (logsChannel && logsChannel instanceof TextChannel) {
+                  const banEmbed = new EmbedBuilder()
+                  .setTitle( banCaseCounter + ` | BAN | ${targetUserTag}`)
+                  .setDescription("User has been banned")
+                  .setAuthor({
+                      name: targetUserTag,
+                      iconURL: targetUserAvatarURL
+                    })
+                    .addFields(
+                        {
+                            name: "User",
+                            value: targetUserTag,
+                            inline: true
+                        },
+                        {
+                            name: "Moderator",
+                            value: interaction.user.tag,
+                            inline: true
+                        },
+                        {
+                            name: "Reason",
+                            value: reason,
+                            inline: true
+                        },
+                        )
+                        .setColor("#00b0f4")
+                        .setFooter({
+                            text: `ID: ${targetUserId}`,
+                        })
+                        .setTimestamp();
+                        
+                        await logsChannel.send({ embeds: [banEmbed] });
+                    } else {
+                        console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
+                    }                        
+                        await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}`);
                 },
                 {
                     name: "Moderator",
@@ -133,3 +162,7 @@ await interaction.editReply(`User ${targetUserTag} was banned\nReason: ${reason}
   permissionsRequired: [PermissionFlagsBits.BanMembers],
   botPermissions: [PermissionFlagsBits.BanMembers],
 };
+                permissionsRequired: [PermissionFlagsBits.BanMembers],
+                botPermissions: [PermissionFlagsBits.BanMembers],
+            };
+            
