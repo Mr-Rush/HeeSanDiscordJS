@@ -34,7 +34,6 @@ module.exports = {
             // Get the user tag before unbanning
             const unbannedUserTag = bannedUser.user.tag;
 
-            targetUserId.send(`You have been unbanned \nPlease do not break any rules again as it will result in stricter punishment\nReason: ${reason}`)
 
             // Log the unban action in the "logs" channel
             const logsChannel = interaction.guild.channels.cache.find(
@@ -43,27 +42,26 @@ module.exports = {
 
             if (logsChannel && logsChannel instanceof TextChannel) {
                 const unbanEmbed = new EmbedBuilder()
-            .setTitle("UNBAN | ${targetUserTag}")
+            .setTitle(`UNBAN | ${targetUserId}`)
             .setDescription("User has been unbanned")
             .setAuthor({
-                name: targetUserTag,
-                iconURL: targetUserAvatarURL
+                name: targetUserId,
             })
             .addFields(
                 {
                     name: "User",
-                    value: "targetUserTag",
+                    value: targetUserId,
                     inline: true
                 },
                 {
                     name: "Moderator",
-                    value: "interaction.user.tag",
+                    value: interaction.user.tag,
                     inline: true
                 },
                 )
                 .setColor("#00b0f4")
   .setFooter({
-      text: "ID: ${targetUserId}",
+      text: `ID: ${targetUserId}`,
     })
     .setTimestamp();
                 
