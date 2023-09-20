@@ -20,14 +20,14 @@ module.exports = (client) => {
 
   // Listen for the guildMemberAdd event
   client.on('guildMemberAdd', (member) => {
-    const welcomeEventFile = path.join(__dirname, '..', 'events', 'welcome', 'welcome.js');
+    const welcomeEventFile = path.join(__dirname, '..', 'events', 'guildMemberAdd', 'welcome.js');
     const welcomeFunction = require(welcomeEventFile);
     welcomeFunction(client, member);
   });
 
   // Listen for the guildMemberRemove event
   client.on('guildMemberRemove', (member) => {
-    const leaveEventFile = path.join(__dirname, '..', 'events', 'leave', 'leave.js');
+    const leaveEventFile = path.join(__dirname, '..', 'events', 'guildMemberRemove', 'leave.js');
     const leaveFunction = require(leaveEventFile);
     leaveFunction(client, member);
   });
