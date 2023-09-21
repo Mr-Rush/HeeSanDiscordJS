@@ -8,6 +8,8 @@ const {
   } = require('discord.js');
   const fs = require('fs');
   
+  const ModerationLog = require('../../models/ModerationLog'); // Import the model for logging
+
   // Initialize the ban case counter by reading from the JSON file
   let banData = readBanDataFromFile();
   
@@ -61,6 +63,7 @@ const {
         // Attempt to send the ban notification DM to the user
         try {
           await targetUser.send(`You have been **banned** from Chung and the fellas\n\nReason: ${reason}`);
+    
         } catch (error) {
           if (error.code === 50007) {
             console.log(`Could not send a DM to ${targetUser.user.tag} (User has DMs disabled).`);
@@ -69,6 +72,21 @@ const {
             console.error(`Error sending DM to ${targetUser.user.tag}: ${error.message}`);
           }
         }
+
+        const logEntry = new ModerationLog({
+          moderatorId: interaction.user.id, // Moderator's ID
+          targetUserId: targetUser.id, // Target user's ID
+          action: 'ban', // Action (ban)
+          reason: reason,
+        });
+  
+        logEntry.save()
+          .then((log) => {
+            console.log('Ban logged:', log);
+          })
+          .catch((error) => {
+            console.error('Error logging ban:', error);
+          });
   
         await targetUser.ban({ reason });
   
