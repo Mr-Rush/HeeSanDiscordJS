@@ -11,7 +11,7 @@ const moderationLogSchema = new mongoose.Schema({
   },
   action: {
     type: String,
-    enum: ['kick', 'ban', 'unban'],
+    enum: ['kick', 'ban', 'unban', 'warn'],
     required: true,
   },
   reason: String,
