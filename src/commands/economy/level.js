@@ -1,12 +1,7 @@
-const {
-  Client,
-  Interaction,
-  ApplicationCommandOptionType,
-  AttachmentBuilder,
-} = require('discord.js');
-const canvacord = require('canvacord');
+const { Client, Interaction, ApplicationCommandOptionType } = require('discord.js');
 const calculateLevelXp = require('../../utils/calculateLevelXp');
 const Level = require('../../models/Level');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   /**
@@ -15,63 +10,70 @@ module.exports = {
    * @param {Interaction} interaction
    */
   callback: async (client, interaction) => {
-    if (!interaction.inGuild()) {
-      interaction.reply('You can only run this command inside a server.');
-      return;
-    }
-
-    await interaction.deferReply();
-
-    const mentionedUserId = interaction.options.get('target-user')?.value;
-    const targetUserId = mentionedUserId || interaction.member.id;
-    const targetUserObj = await interaction.guild.members.fetch(targetUserId);
-
-    const fetchedLevel = await Level.findOne({
-      userId: targetUserId,
-      guildId: interaction.guild.id,
-    });
-
-    if (!fetchedLevel) {
-      interaction.editReply(
-        mentionedUserId
-          ? `${targetUserObj.user.tag} doesn't have any levels yet. Try again when they chat a little more.`
-          : "You don't have any levels yet. Chat a little more and try again."
-      );
-      return;
-    }
-
-    let allLevels = await Level.find({ guildId: interaction.guild.id }).select(
-      '-_id userId level xp'
-    );
-
-    allLevels.sort((a, b) => {
-      if (a.level === b.level) {
-        return b.xp - a.xp;
-      } else {
-        return b.level - a.level;
-      }
-    });
-
-    let currentRank = allLevels.findIndex((lvl) => lvl.userId === targetUserId) + 1;
-
-    // Check if presence is available before accessing status
-    const userStatus = targetUserObj.presence?.status || 'offline';
-
-    const rank = new canvacord.Rank()
-      .setAvatar(targetUserObj.user.displayAvatarURL({ size: 256 }))
-      .setRank(currentRank)
-      .setLevel(fetchedLevel.level)
-      .setCurrentXP(fetchedLevel.xp)
-      .setRequiredXP(calculateLevelXp(fetchedLevel.level))
-      .setStatus(userStatus) // Use userStatus instead of targetUserObj.presence.status
-      .setProgressBar('#FFC300', 'COLOR')
-      .setUsername(targetUserObj.user.username)
-      .setDiscriminator(targetUserObj.user.discriminator);
-
-    const data = await rank.build();
-    const attachment = new AttachmentBuilder(data);
-    interaction.editReply({ files: [attachment] });
+    // Reply with the development message
+    await interaction.reply('This command is currently in development.');
   },
+
+
+
+    // await interaction.deferReply();
+
+    // const mentionedUserId = interaction.options.get('target-user')?.value;
+    // const targetUserId = mentionedUserId || interaction.member.id;
+    // const targetUserObj = await interaction.guild.members.fetch(targetUserId);
+
+    // const fetchedLevel = await Level.findOne({
+    //   userId: targetUserId,
+    //   guildId: interaction.guild.id,
+    // });
+
+    // if (!fetchedLevel) {
+    //   interaction.editReply(
+    //     mentionedUserId
+    //       ? `${targetUserObj.user.tag} doesn't have any levels yet. Try again when they chat a little more.`
+    //       : "You don't have any levels yet. Chat a little more and try again."
+    //   );
+    //   return;
+    // }
+
+    // // Create an embedded message using EmbedBuilder with the specified format
+    // const embed = new EmbedBuilder()
+    //   .setAuthor({
+    //     name: `${targetUserObj.user.tag} Level`,
+    //   })
+    //   .setTitle(`The level of ${targetUserObj.user.tag}`)
+    //   .addFields(
+    //     {
+    //       name: "A New Field",
+    //       value: "",
+    //       inline: true,
+    //     },
+    //     {
+    //       name: "A New Field",
+    //       value: "",
+    //       inline: false,
+    //     },
+    //     {
+    //       name: "A New Field",
+    //       value: "",
+    //       inline: false,
+    //     },
+    //     {
+    //       name: "A New Field",
+    //       value: "",
+    //       inline: false,
+    //     }
+    //   )
+    //   .setColor("#00b0f4");
+
+    //   try {
+    //     await interaction.editReply({ embeds: [embed] });
+    //   } catch (error) {
+    //     console.error('An error occurred:', error);
+    //   }
+      
+    
+  // },
 
   name: 'level',
   description: "Shows your/someone's level.",

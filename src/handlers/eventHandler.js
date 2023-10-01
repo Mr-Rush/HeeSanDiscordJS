@@ -18,12 +18,12 @@ module.exports = (client) => {
     });
   }
 
-  // Listen for the guildMemberAdd event
-  // client.on('guildMemberAdd', (member) => {
-  //   const welcomeEventFile = path.join(__dirname, '..', 'events', 'guildMemberAdd', 'welcome.js');
-  //   const welcomeFunction = require(welcomeEventFile);
-  //   welcomeFunction(client, member);
-  // });
+  //Listen for the guildMemberAdd event
+  client.on('guildMemberAdd', (member) => {
+    const welcomeEventFile = path.join(__dirname, '..', 'events', 'guildMemberAdd', 'welcome.js');
+    const welcomeFunction = require(welcomeEventFile);
+    welcomeFunction(client, member);
+  });
 
   // Listen for the guildMemberRemove event
   client.on('guildMemberRemove', (member) => {

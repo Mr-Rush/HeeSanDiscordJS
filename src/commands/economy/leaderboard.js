@@ -50,7 +50,7 @@ module.exports = {
       embed.addFields(
         {
           name: `${rankEmoji} #${i + 1} - ${user.tag}`,
-          value: `Rank: ${i + 1}\nLevel: ${top10Users[i].level}`,
+          value: `Level: ${top10Users[i].level}`,
           inline: false,
         }
       );

@@ -107,6 +107,10 @@ const {
           (channel) => channel.name === 'logs'
         );
   
+        const extraLogsChannel = interaction.guild.channels.cache.find(
+          (channel) => channel.name === 'public-shaming'
+        );
+
         if (logsChannel && logsChannel instanceof TextChannel) {
           const banEmbed = new EmbedBuilder()
             .setTitle(`${banData.banCaseCounter} | BAN | ${targetUserTag}`)
@@ -139,17 +143,15 @@ const {
             .setTimestamp();
   
           await logsChannel.send({ embeds: [banEmbed] });
+          await extraLogsChannel.send({ embeds: [banEmbed] });
         } else {
           console.log("The 'logsChannel' is not a text channel. Unable to log ban action.");
         }
-  
-        // ... your existing code ...
       } catch (error) {
         console.error(`There was an error when banning: `, error);
       }
     },
   
-    // ... your other code ...
   };
   
   function readBanDataFromFile() {
