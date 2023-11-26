@@ -19,7 +19,7 @@ module.exports = async (client, member) => {
     }
   };
 
-  const channel = member.guild.channels.cache.find((ch) => ch.name === 'welcome');
+  const channel = member.guild.channels.cache.find((ch) => ch.name === 'welcome✦-ˑ-ִֶָ-𓂃⊹');
   if (channel) {
     // Send a normal message tagging the user
     await channel.send(`🎉 Welcome to the server, <@${member.id}>!`)
