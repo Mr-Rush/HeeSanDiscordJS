@@ -11,3 +11,4 @@ database.dev.json
 database.prod.json
 config.dev.json
 config.prod.json
+.env
