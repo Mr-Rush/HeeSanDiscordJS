@@ -34,7 +34,7 @@
 
   <h3>Welcome Message</h3>
   <p>Sends a premade message everytime a member joins</p>
-
+    <img src="https://cdn.discordapp.com/attachments/648776008274673664/1205740918783741992/image.png?ex=65d978bc&is=65c703bc&hm=08cb15d7ab39aaa4d7e43af3d3a5052e857f19b7b82578477e9b1c2d9a03a069&" alt="">
 
   <h3>Goodbye Message</h3>
   <p>Sends a goodbye message when a member leaves the server.</p>
