@@ -20,7 +20,7 @@
 
   <h3>Fun Commands</h3>
   <ul>
-    <li><strong>!dadjokes</strong>: Provides a fun dadjoke from a long json list of jokes.</li>
+    <li><strong>/dadjokes</strong>: Provides a fun dadjoke from a long json list of jokes.</li>
   </ul>
 
   <h3>Utility Commands</h3>
